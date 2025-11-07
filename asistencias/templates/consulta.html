@@ -1,0 +1,98 @@
+{% load form_tags %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta de Horas Laboradas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+</head>
+<body class="bg-light">
+
+{% load static %}
+<nav class="navbar navbar-dark bg-dark mb-4">
+    <div class="container-fluid d-flex align-items-center">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <img src="{% static 'img/Logo verfrut.png' %}" alt="Logo" width="40" height="40" class="me-2 rounded">
+            <span class="text-light">Consulta de Horas Laboradas</span>
+        </a>
+    </div>
+</nav>
+
+
+<div class="container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card shadow-sm p-4 mb-4">
+        <h5 class="mb-3">Buscar tus horas trabajadas</h5>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-md-4">
+                    {{ form.empresa.label_tag }}
+                    {{ form.empresa|add_class:"form-select" }}
+                </div>
+                <div class="col-md-4">
+                    {{ form.dni.label_tag }}
+                    {{ form.dni|add_class:"form-control" }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.mes.label_tag }}
+                    {{ form.mes|add_class:"form-select" }}
+                </div>
+                <div class="col-md-1 d-grid">
+                    <button class="btn btn-primary">Consultar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+{% if df %}
+<div class="card border-0 shadow-lg p-4 mb-5 rounded-4">
+    <!-- Encabezado -->
+    <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+        <h5 class="text-primary fw-bold mb-0 d-flex align-items-center">
+            <i class="bi bi-clock-history me-2"></i> Horas por día — {{ nombre }}
+        </h5>
+        <span class="badge bg-dark fs-6 px-3 py-2 text-uppercase shadow-sm">{{ mes }}</span>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-responsive">
+        <table class="table table-hover align-middle text-center shadow-sm rounded-3 overflow-hidden">
+            <thead class="table-dark">
+                <tr>
+                    <th class="py-3"><i class="bi bi-calendar"></i> Fecha</th>
+                    <th class="py-3"><i class="bi bi-clock"></i> Horas trabajadas</th>
+                </tr>
+            </thead>
+            <tbody class="align-middle">
+                {% for fila in df %}
+                <tr>
+                    <td >{{ fila.fecha }}</td>
+                    <td >{{ fila.horas_trabajadas }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Total -->
+    <div class="alert alert-info text-center mt-3 mb-0 shadow-sm border-0">
+        <h6 class="mb-0">
+            🟢 <strong>Total de horas trabajadas:</strong> 
+            <span class="text-dark fs-5 fw-bold">{{ total_horas }}</span>
+        </h6>
+    </div>
+</div>
+{% endif %}
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
